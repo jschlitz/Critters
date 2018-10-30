@@ -9,10 +9,14 @@ Pretty much everything
   * Growth rules
   * impassible terrain
   * multiple types of plantlife?
+  2d array of tuples of objects (updated/current) calculations to be based on current value with a 2nd pass to fixup
+  dictionaries? allowing multiple things to exist there. Or pocos and they just know how to interact with others... hm.
+  
 * Basic configuration
   * file reading
   * snoop on file changes
 * UI
+  * consider: https://www.i-programmer.info/programming/wpf-workings/620-using-the-wpf-net-40-datagrid-.html
   * mvvm-ify it. What fits with what I use for FCA?
   * view main field
   * reset, step, autorun, speed...

@@ -20,7 +20,7 @@ namespace Critters
       {
         for (int j = 0; j < y; j++)
         {
-          Cells[x, y] = new Cell();
+          Cells[i, j] = new Cell();
         }
       }
     }
@@ -28,6 +28,8 @@ namespace Critters
     public void CalculateNeighbors(int x, int y)
     {
       Cells[x,y].CachedNeighbors = new List<Cell>();
+
+      //TODO: collapse:
       if (Neighborhood == Neighborhood.Moore)
       {
         for (int xc = -1 * NeighborhoodSize; xc <= NeighborhoodSize; xc++)
@@ -45,6 +47,7 @@ namespace Critters
               Cells[x, y].CachedNeighbors.Add(Cells[(xc + x + MaxX) % MaxX, (yc + y + MaxY) % MaxY]);
         }
       }
+      Cells[x, y].CachedNeighbors.Remove(Cells[x, y]);
     }
 
     public int MaxX { get; private set; }

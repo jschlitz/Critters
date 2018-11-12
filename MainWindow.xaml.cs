@@ -23,6 +23,16 @@ namespace Critters
     public MainWindow()
     {
       InitializeComponent();
+      var f = new Field(10, 10, Neighborhood.Moore,2);
+      for (int i = 0; i < f.MaxX; i++)
+      {
+        for (int j = 0; j < f.MaxY; j++)
+        {
+          f.Cells[i, j].Vegetation = i * 10 + j;
+          f.CalculateNeighbors(i,j);
+        }
+      }
+
     }
   }
 }

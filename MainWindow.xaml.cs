@@ -22,7 +22,9 @@ namespace Critters
   {
     public MainWindow()
     {
+      
       InitializeComponent();
+      Renderer r = new Renderer { Canvas = this.MainCanvas };
       var f = new Field(10, 10, Neighborhood.Moore,2);
       for (int i = 0; i < f.MaxX; i++)
       {
@@ -32,6 +34,12 @@ namespace Critters
           f.CalculateNeighbors(i,j);
         }
       }
+
+      f.Renderer = r;
+
+      DataContext = f;
+
+    //https://docs.microsoft.com/en-us/dotnet/framework/wpf/graphics-multimedia/geometry-overview - consider combinedgeometry. where should Render() live?
 
     }
   }

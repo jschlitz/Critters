@@ -11,12 +11,12 @@
       <RowDefinition Height="auto"/>
       <RowDefinition Height="*"/>
     </Grid.RowDefinitions>
-      <StackPanel Orientation="Horizontal" Grid.Row="0">
-        <Button Margin="4" Width="50">Step</Button>
-        <Button Margin="4" Width="50">Go</Button>
-      </StackPanel>
-      <Canvas Background="Black" x:Name="MainCanvas" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="1">
-        
-      </Canvas>
+    <StackPanel Orientation="Horizontal" Grid.Row="0">
+      <Button Margin="4" Width="50" Command="{Binding RenderOneCommand}">Step</Button>
+      <Button Margin="4" Width="50">Go</Button>
+    </StackPanel>
+    <Canvas Background="Black" x:Name="MainCanvas" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="1">
+
+    </Canvas>
   </Grid>
 </Window>

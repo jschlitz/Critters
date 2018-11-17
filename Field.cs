@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 
 namespace Critters
 {
@@ -10,6 +11,8 @@ namespace Critters
   {
     public Field(int x, int y, Neighborhood n = Neighborhood.Moore, int neighborhoodSize=1)
     {
+      RenderOneCommand = new RelayCommand(RenderOne);
+
       Neighborhood = n;
       NeighborhoodSize = neighborhoodSize;
       MaxX = x;
@@ -23,6 +26,14 @@ namespace Critters
           Cells[i, j] = new Cell();
         }
       }
+    }
+
+    public Renderer Renderer { get; set; }
+    public ICommand RenderOneCommand { get; private set;}
+
+    private void RenderOne(object obj)
+    {
+      Renderer.Render(this);
     }
 
     public void CalculateNeighbors(int x, int y)

@@ -7,6 +7,7 @@ using System.Windows;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using System.Windows.Controls;
+using System.Linq.Expressions;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
@@ -22,26 +23,48 @@ namespace Critters
   /// <remarks>If I really MVVM this out, use an interface in the VM</remarks>
   public class Renderer
   {
+    public Renderer()
+    {
+      Vegetation = Colors.ForestGreen;
+    }
+
     public Brush Background { get; set; } = Brushes.DarkSlateGray;
-    public Brush Vegetation { get; set; } = Brushes.ForestGreen;
+    private List<SolidColorBrush> VegBrushes = new List<SolidColorBrush>();
+    private List<Pen> VegPens = new List<Pen>();
+    public Color Vegetation
+    {
+      get => VegBrushes[VegBrushes.Count - 1].Color;
+      set
+      {
+        VegBrushes.Clear();
+        VegPens.Clear();
+        for (int i = 0; i < Cell.MAX_VEGETATION; i++)
+        {
+          var c = Color.Multiply(value, (float)(0.5 + 0.5*i / Cell.MAX_VEGETATION));
+          var b = new SolidColorBrush(c);
+          VegBrushes.Add(b);
+          VegPens.Add(new Pen(b, 1));
+        }
+      }
+    }
     public Brush Edge { get; set; } = Brushes.SlateGray;
     public Canvas Canvas { get; set; }
     public int CellSize { get; set; } = 24;
 
     public void Render(Field field)
     {
-      
+      // TODO: consider caching the grid.
       var grid = new StreamGeometry();
       using (var ctx = grid.Open())
       {
         for (int x = 0; x < field.MaxX; x++)
         {
-          ctx.BeginFigure(new Point(CellSize*x, CellSize * field.MaxY), true, false);
-          ctx.LineTo(new Point(CellSize*x, 0),true, false);
+          ctx.BeginFigure(new Point(CellSize * x, CellSize * field.MaxY), true, false);
+          ctx.LineTo(new Point(CellSize * x, 0), true, false);
         }
         for (int y = 0; y < field.MaxY; y++)
         {
-          ctx.BeginFigure(new Point(CellSize*field.MaxX, CellSize * y), true, false);
+          ctx.BeginFigure(new Point(CellSize * field.MaxX, CellSize * y), true, false);
           ctx.LineTo(new Point(0, CellSize * y), true, false);
         }
       }
@@ -49,7 +72,39 @@ namespace Critters
       grid.Freeze();
       gridPath.Data = grid;
 
+      //veg
+      Path[] vegPath = new Path[Cell.MAX_VEGETATION];
+      for (int i = 0; i < Cell.MAX_VEGETATION; i++)
+      {
+        vegPath[i] = GetVegPath(i, field);
+      }
+
+      foreach (var v in vegPath)
+        Canvas.Children.Add(v);
       Canvas.Children.Add(gridPath);
+    }
+
+    private Path GetVegPath(int index, Field field)
+    {
+      var gg = new GeometryGroup();
+      for (int x = 0; x < field.MaxX; x++)
+      {
+        for (int y = 0; y < field.MaxY; y++)
+        {
+          if (field.Cells[x, y].Vegetation == index)
+          {
+            gg.Children.Add(new EllipseGeometry(new Rect(CellSize * x, CellSize * y, CellSize, CellSize)));
+          }
+        }
+      }
+      var result = new Path
+      {
+        Stroke = VegBrushes[index],
+        Fill = VegBrushes[index],
+        Data = gg
+      };
+
+      return result;
     }
   }
 }

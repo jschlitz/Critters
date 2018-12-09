@@ -21,21 +21,21 @@ namespace Critters
   public partial class MainWindow : Window
   {
     public MainWindow()
-    {
-      
+    {      
       InitializeComponent();
-      Renderer r = new Renderer { Canvas = this.MainCanvas };
-      var f = new Field(10, 10, Neighborhood.Moore,2);
+      var rand = new Random(413);
+      Renderer renderer = new Renderer { Canvas = this.MainCanvas };
+      var f = new Field(80, 64, Neighborhood.Moore,2);
       for (int i = 0; i < f.MaxX; i++)
       {
         for (int j = 0; j < f.MaxY; j++)
         {
-          f.Cells[i, j].Vegetation = i * 10 + j;
+          f.Cells[i, j].Vegetation = rand.Next() > 0.5 ? rand.Next(1, 11) : 0;
           f.CalculateNeighbors(i,j);
         }
       }
 
-      f.Renderer = r;
+      f.Renderer = renderer;
 
       DataContext = f;
 

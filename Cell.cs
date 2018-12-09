@@ -8,6 +8,7 @@ namespace Critters
 {
   public class Cell: ViewModel
   {
+    public const int MAX_VEGETATION = 10;
     int _Vegetation;
 
     public int Vegetation

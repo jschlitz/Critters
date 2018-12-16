@@ -25,12 +25,13 @@ namespace Critters
       InitializeComponent();
       var rand = new Random(413);
       Renderer renderer = new Renderer { Canvas = this.MainCanvas };
-      var f = new Field(80, 64, Neighborhood.Moore,2);
+      var f = new Field(80, 64, Neighborhood.Moore,1);
       for (int i = 0; i < f.MaxX; i++)
       {
         for (int j = 0; j < f.MaxY; j++)
         {
-          f.Cells[i, j].Vegetation = rand.Next() > 0.5 ? rand.Next(1, 11) : 0;
+          //f.Cells[i, j].Vegetation = (rand.NextDouble() > 0.7) ? rand.Next(1, 11) : 0;
+          f.Cells[i, j].Vegetation = (i == 1) ? rand.Next(1, 11) : 0;
           f.CalculateNeighbors(i,j);
         }
       }

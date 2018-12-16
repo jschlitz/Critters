@@ -26,6 +26,13 @@ namespace Critters
           Cells[i, j] = new Cell();
         }
       }
+      for (int i = 0; i < x; i++)
+      {
+        for (int j = 0; j < y; j++)
+        {
+          CalculateNeighbors(i, j);
+        }
+      }
     }
 
     public Renderer Renderer { get; set; }
@@ -33,6 +40,7 @@ namespace Critters
 
     private void RenderOne(object obj)
     {
+      Tick();
       Renderer.Render(this);
     }
 
@@ -59,6 +67,18 @@ namespace Critters
         }
       }
       Cells[x, y].CachedNeighbors.Remove(Cells[x, y]);
+    }
+
+    public void Tick()
+    {
+      foreach (var c in Cells)
+      {
+        c.CalculateVeg();
+      }
+      foreach (var c in Cells)
+      {
+        c.CommitVeg();
+      }
     }
 
     public int MaxX { get; private set; }

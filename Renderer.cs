@@ -28,7 +28,7 @@ namespace Critters
       Vegetation = Colors.ForestGreen;
     }
 
-    public Brush Background { get; set; } = Brushes.DarkSlateGray;
+    public SolidColorBrush Background { get; set; } = Brushes.DarkSlateGray;
     private List<SolidColorBrush> VegBrushes = new List<SolidColorBrush>();
     private List<Pen> VegPens = new List<Pen>();
     public Color Vegetation
@@ -38,7 +38,12 @@ namespace Critters
       {
         VegBrushes.Clear();
         VegPens.Clear();
-        for (int i = 0; i < Cell.MAX_VEGETATION; i++)
+
+        //0 is empty
+        VegBrushes.Add(Background); 
+        VegPens.Add(new Pen(Background, 1));
+
+        for (int i = 1; i <= Cell.MAX_VEGETATION; i++)
         {
           var c = Color.Multiply(value, (float)(0.5 + 0.5*i / Cell.MAX_VEGETATION));
           var b = new SolidColorBrush(c);
@@ -53,7 +58,12 @@ namespace Critters
 
     public void Render(Field field)
     {
-      // TODO: consider caching the grid.
+    //TODO: the background can probably cached too.
+    //  var background = new RectangleGeometry();
+    //  background.Fill = Background;
+    //  background.
+
+      // TODO: consider caching the grid. or a drawingbrush?
       var grid = new StreamGeometry();
       using (var ctx = grid.Open())
       {
@@ -68,17 +78,21 @@ namespace Critters
           ctx.LineTo(new Point(0, CellSize * y), true, false);
         }
       }
-      var gridPath = new Path { Stroke = Edge, StrokeThickness = 1 };
+      var gridPath = new Path { Stroke = Edge, StrokeThickness = 1};
       grid.Freeze();
       gridPath.Data = grid;
 
       //veg
-      Path[] vegPath = new Path[Cell.MAX_VEGETATION];
-      for (int i = 0; i < Cell.MAX_VEGETATION; i++)
+      Canvas.Children.Clear();
+      Path[] vegPath = new Path[Cell.MAX_VEGETATION + 1];
+
+      vegPath[0] = new Path();//0 is empty
+      for (int i = 1; i <= Cell.MAX_VEGETATION; i++)
       {
         vegPath[i] = GetVegPath(i, field);
       }
 
+      //Now actually add things, back to front.
       foreach (var v in vegPath)
         Canvas.Children.Add(v);
       Canvas.Children.Add(gridPath);
